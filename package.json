@@ -1,6 +1,6 @@
 {
   "name": "commonform-replicator",
-  "description": "replicate Common Form server",
+  "description": "replicate Common Form servers",
   "version": "0.0.0",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "dependencies": {
