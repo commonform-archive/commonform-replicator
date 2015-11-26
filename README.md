@@ -21,7 +21,7 @@ In general, the package approaches replication as a two-step process:
 1. Register an HTTP callback for new writes.
 2. Then, request an index of already existing forms, by digest. This request may be relatively long running.
 
-This approach is inferior, in efficiency terms, to other common message broader and pub/sub approaches. It has one large offsetting benefit relevant to Common Form: It allows Common Form servers to avoid storing data that could be used to infer when a particular Common Form was added to the content-addressable store, relative to other, unrelated forms. In graph terms, it enables Common Form servers to enable ordering trees of the forests they store.
+This approach is inferior, in efficiency terms, to other common message broader and pub/sub approaches. It has one large offsetting benefit relevant to Common Form: It allows Common Form servers to avoid storing data that could be used to infer when a particular Common Form was added to the content-addressable store, relative to other, unrelated forms. In graph terms, it enables Common Form servers to avoid ordering trees as they are added to the forest of the store.
 
 The primary intended use case is to link smaller service providing indexing or other analysis to master Common Form servers. Such ancillary services might provide, for example:
 
