@@ -12,7 +12,8 @@ tape('replicate existing and new forms', function(test) {
 
   var forms = [
     { content: [ 'First' ] },
-    { content: [ 'Second' ] } ]
+    { content: [ 'Second' ] },
+    { content: [ 'Third' ] } ]
   var replicatedForms = [ ]
 
   // Array of test steps, in chronological order. Steps are run with a fixed
@@ -73,8 +74,9 @@ tape('replicate existing and new forms', function(test) {
         replicator.start(formServer, callbackEndpoint)
         done() }) },
 
-    // POST the second form after starting replication.
+    // POST remaining forms after starting replication.
     postForm.bind(null, forms[1]),
+    postForm.bind(null, forms[2]),
 
     // Check that all forms have been replicated.
     function(done) {
