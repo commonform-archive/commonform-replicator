@@ -16,19 +16,20 @@ inherits(Replicator, EventEmitter)
 
 var prototype = Replicator.prototype
 
-prototype.replicate = function(formServerURL, endpoint) {
+prototype.start = function(formServerURL, callbackEndpoint) {
+  var self = this
   var parsed = url.parse(formServerURL)
-  this.formServer = {
+  self.formServer = {
     auth: parsed.auth,
     hostname: parsed.hostname,
     port: parsed.port }
-  this.protocol = (
-    this.formServer.protocol === 'https:' ?
+  self.protocol = (
+    self.formServer.protocol === 'https:' ?
       require('https') :
       require('http') )
-  this.endpoint = endpoint
-  this._registerHTTPCallback(function() {
-    this._getFormsList() }) }
+  self._callbackEndpoint = callbackEndpoint
+  self._registerHTTPCallback(function() {
+    self._getFormsList() }) }
 
 prototype._registerHTTPCallback = function(onSuccess) {
   var self = this
@@ -45,21 +46,25 @@ prototype._registerHTTPCallback = function(onSuccess) {
         error.action = 'register'
         self.emit('error', error) } })
     .once('error', function(error) {
-      self.emit(error) })
-    .end(self.endpoint) }
+      self.emit('error', error) })
+    .end(self._callbackEndpoint) }
 
 prototype._getFormsList = function() {
   var self = this
-  this._formServerRequest({ method: 'GET', path: '/forms' })
+  var options = { method: 'GET', path: '/forms' }
+  var request = self._formServerRequest(options)
     .once('response', function(response) {
-      var splitter = new Split(new Buffer('\r\n'))
-      splitter
-        .on('data', function(buffer) {
-          self.emit('digest', buffer.toString()) })
+      var splitter = new Split(new Buffer('\n'))
+      splitter.on('data', function(buffer) {
+        self.emit('digest', buffer.toString()) })
       response.pipe(splitter) })
     .once('error', function(error) {
-      self.emit(error) })
-    .end() }
+      self.emit('error', error) })
+  self._formsRequest = request
+  request.end() }
+
+prototype.stop = function() {
+  this._formsRequest.abort() }
 
 prototype.handler = function(request, response) {
   var self = this
@@ -88,9 +93,10 @@ prototype.request = function(digest) {
               self.emit('form', digest, json) }
             else {
               self.emit('invalid', json) } } }) })) })
-    .on('error', function(error) {
+    .once('error', function(error) {
       error.action = 'request form'
-      self.emit('error', error) }) }
+      self.emit('error', error) })
+    .end() }
 
 prototype._formServerRequest = function(argument) {
   var options = Object.assign(argument, this.formServer)

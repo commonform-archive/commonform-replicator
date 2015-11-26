@@ -11,8 +11,15 @@
     "stream-split": "^0.2.0"
   },
   "devDependencies": {
+    "bole": "^2.0.0",
+    "commonform-serve": "commonform/commonform-serve",
+    "levelup": "^1.3.0",
+    "memdown": "^1.1.0",
     "tape": "^4.2.2"
   },
   "license": "Apache-2.0",
-  "repository": "commonform/commonform-replicator"
+  "repository": "commonform/commonform-replicator",
+  "scripts": {
+    "test": "tape test.js"
+  }
 }
