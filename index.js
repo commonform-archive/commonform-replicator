@@ -68,7 +68,7 @@ prototype._registerHTTPCallback = function(onSuccess) {
       // 2xx status code denotes success.
       var successful = ( statusCode >= 200 && statusCode < 300 )
       if (successful) {
-        self.emit('info', 'Registered HTTP callback.')
+        self.emit('registered', 'Registered HTTP callback.')
         onSuccess() }
       else {
         var error = new Error('Could not register HTTP callback.')
